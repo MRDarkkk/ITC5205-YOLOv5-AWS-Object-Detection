@@ -1,0 +1,12 @@
+# Keep Docker/CodeBuild input lean. Do NOT ignore yolov5n.pt.
+.git
+**/.git
+**/.git/**
+**/__pycache__
+**/*.pyc
+**/.venv
+**/runs
+**/tests
+**/.github
+**/*.log
+**/*.zip

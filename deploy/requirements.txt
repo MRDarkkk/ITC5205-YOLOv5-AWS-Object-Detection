@@ -1,0 +1,3 @@
+# AWS service client for S3 and DynamoDB in code/lambda_function.py.
+# YOLOv5 and PyTorch requirements are installed separately in Dockerfile.
+boto3>=1.34,<2

@@ -1,0 +1,41 @@
+# ITC5205 Assignment 2 — Build the YOLOv5 AWS Lambda container with CodeBuild.
+# This file must be at the TOP LEVEL of the CodeBuild source ZIP, alongside
+# code/, deploy/, yolov5/, yolov5n.pt, and .dockerignore.
+# Build project requirements (configure later in the AWS Console):
+#   Region: ap-southeast-2
+#   Environment: Linux x86_64, Docker available, privileged mode enabled
+#   Service role: read source S3 object, write logs and push to specified ECR repo
+#   Output artifacts: none (the image is pushed directly to ECR)
+
+version: 0.2
+
+env:
+  variables:
+    IMAGE_REPO_NAME: itc5205-yolov5-lambda
+    IMAGE_TAG: v1
+
+phases:
+  pre_build:
+    commands:
+      - echo "Checking application files..."
+      - test -f code/lambda_function.py
+      - test -f deploy/Dockerfile
+      - test -f deploy/requirements.txt
+      - test -f yolov5/hubconf.py
+      - test -f yolov5n.pt
+      - echo "Checking Docker and AWS CLI..."
+      - docker --version
+      - aws --version
+      - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - REGISTRY_URI="$ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com"
+      - echo "Logging in to the Amazon ECR registry..."
+      - aws ecr get-login-password --region "$AWS_DEFAULT_REGION" | docker login --username AWS --password-stdin "$REGISTRY_URI"
+  build:
+    commands:
+      - echo "Building Linux amd64 Lambda container image..."
+      - docker build --platform linux/amd64 -f deploy/Dockerfile -t "$REGISTRY_URI/$IMAGE_REPO_NAME:$IMAGE_TAG" .
+  post_build:
+    commands:
+      - echo "Pushing the container to Amazon ECR..."
+      - docker push "$REGISTRY_URI/$IMAGE_REPO_NAME:$IMAGE_TAG"
+      - echo "Container image pushed to ECR successfully."

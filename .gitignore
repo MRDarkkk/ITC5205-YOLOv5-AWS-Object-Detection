@@ -1,0 +1,46 @@
+
+# Python temporary files
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Sensitive credentials and environment files
+.env
+.env.*
+!.env.example
+.aws/
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Build and temporary files
+build/
+dist/
+*.log
+*.zip
+
+# Jupyter temporary files
+.ipynb_checkpoints/
+
+# Windows and macOS temporary files
+Thumbs.db
+desktop.ini
+.DS_Store
+
+
+# Exclude credentials and local secrets
+**/.aws/
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
